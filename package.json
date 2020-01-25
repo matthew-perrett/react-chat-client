@@ -1,0 +1,17 @@
+{
+  "name": "codeutopia",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babelify": "^10.0.0",
+    "help": "^3.0.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  }
+}
