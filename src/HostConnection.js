@@ -12,23 +12,23 @@ module.exports = function() {
     socket.on('connect', function() { console.log('Connected'); });
 
     socket.on('data', function(data) {
-        const rtc = new Peer({ initiator: false, trickle: false });
+        const peer = new Peer({ initiator: false, trickle: false });
 
-        rtc.signal(data);
+        peer.signal(data);
 
-        rtc.on('signal', function(data) {
+        peer.on('signal', function(data) {
             socket.send(data);
         });
 
-        rtc.on('connect', function() {
-            peers.push(rtc);
+        peer.on('connect', function() {
+            peers.push(peer);
         });
 
-        rtc.on('data', function(msg) {
+        peer.on('data', function(msg) {
             emitter.emit('message', msg);
             //as host, we need to broadcast the data to the other peers
             peers.forEach(function(p) {
-                if(p !== rtc) {
+                if(p !== peer) {
                     p.send(msg);
                 }
             });
@@ -37,6 +37,17 @@ module.exports = function() {
     });
 
     return {
+        onReady: function(callback) {
+            //the host is always "ready" although it may not have any clients
+            callback();
+        },
 
+        send: function(message) {
+            peers.forEach(p => p.send(message));
+        },
+
+        onMessage: function(callback) {
+            emitter.on('message', callback);
+        }
     };
 };
