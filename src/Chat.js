@@ -1,38 +1,38 @@
 const React = require('react');
-const ChatMessage = require('./ChatMessage');
+const createReactClass = require('create-react-class');
+const MessageList = require('./MessageList');
+const MessageForm = require('./MessageForm');
+const MessageStore = require('./MessageStore');
 
-module.exports = React.createClass({
+module.exports = createReactClass({
   getInitialState: function() {
     return {
-      text: '',
-      messages: []
+      messages: MessageStore.getMessages()
     };
   },
 
-  submit: function(ev) {
-    ev.preventDefault();
+  componentWillMount: function() {
+    MessageStore.subscribe(this.updateMessages);
+  },
 
-    let newMessage = <ChatMessage message={this.state.text} />;
+  componentWillUnmount: function() {
+    MessageStore.unsubscribe(this.updateMessages);
+  },
 
+  updateMessages: function() {
     this.setState({
-      messages: this.state.messages.concat([newMessage]),
-      text: ''
+      messages: MessageStore.getMessages()
     });
   },
 
-  updateInput: function(ev) {
-    this.setState({
-      text: ev.target.value
-    });
+  onSend: function(newMessage) {
+    MessageStore.newMessage(newMessage);
   },
 
   render: function() {
     return <div>
-    <div>{this.state.messages}</div>
-    <form onSubmit={this.submit}>
-        <input onChange={this.updateInput} value={this.state.text} type="text" placeholder="Your message" />
-        <input type="submit" value="Send" />
-        </form>
-        </div>;
+      <MessageList messages={this.state.messages} />
+      <MessageForm onSend={this.onSend} />
+    </div>;
   }
 });

@@ -1,6 +1,7 @@
 const React = require('react');
- 
-module.exports = React.createClass({
+const createReactClass = require('create-react-class');
+
+module.exports = createReactClass({
   render: function() {
     return <p>{this.props.message}</p>;
   }
